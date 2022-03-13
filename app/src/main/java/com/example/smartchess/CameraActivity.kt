@@ -15,35 +15,29 @@ import androidx.camera.video.*
 import androidx.camera.video.VideoCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker
+import com.example.smartchess.data.FenPgnHandler
 import com.example.smartchess.databinding.ActivityCameraBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.nio.ByteBuffer
+import dagger.hilt.android.AndroidEntryPoint
+
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-typealias LumaListener = (luma: Double) -> Unit
+typealias moveListener = (Fen: String) -> Unit
+
+
+@AndroidEntryPoint
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityCameraBinding
 
     private var imageCapture: ImageCapture? = null
 
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
-
-/*
-    private val mode = intent.getStringExtra(MODE)
-*/
-
+private val viewmodel:CameraViewmodel by viewModels()
     private lateinit var cameraExecutor: ExecutorService
-
+        private  var counting  = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +59,6 @@ class CameraActivity : AppCompatActivity() {
         viewBinding.videoCaptureButton.setOnClickListener { captureVideo() }
 
     }
-
 
     private fun takePhoto() {   // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
@@ -184,9 +177,14 @@ class CameraActivity : AppCompatActivity() {
         val imageAnalyzer = ImageAnalysis.Builder()
             .build()
             .also {
-                it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                    Log.d(TAG, "Average luminosity: $luma")
-                })
+                it.setAnalyzer(cameraExecutor, FakeAnalysis(counting) { Fen ->
+                counting +=1 %100
+                    FenPgnHandler(Fen)
+
+                }
+
+                )
+
             }
 
         cameraProviderFuture.addListener({
@@ -229,6 +227,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
+/*
     private class LuminosityAnalyzer(private val listener: LumaListener) : ImageAnalysis.Analyzer {
 
         private fun ByteBuffer.toByteArray(): ByteArray {
@@ -258,6 +257,7 @@ class CameraActivity : AppCompatActivity() {
                     }
         }
     }
+*/
 
 
     override fun onDestroy() {

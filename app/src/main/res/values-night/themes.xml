@@ -14,5 +14,6 @@
             tools:targetApi="l">@color/primaryColor</item>
         <item name="backgroundColor"> @color/primaryLightColor</item>
         <!-- Customize your theme here. -->
+
     </style>
 </resources>
