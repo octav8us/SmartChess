@@ -15,15 +15,6 @@
         <item name="backgroundColor"> @color/primaryLightColor</item>
         <!-- Customize your theme here. -->
 
-        <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-            <item name="windowSplashScreenBackground">@color/primaryLightColor</item>
-
-
-            <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-            <item name="windowSplashScreenAnimationDuration">200</item>
-
-            <item name="postSplashScreenTheme">@style/Theme.SmartChess</item>
-        </style>
 
     </style>
 </resources>
